@@ -70,7 +70,7 @@ def api_zabbix_create_host(deveui, id_org):
                         'groups': {'groupid': GROUPID},
                         'templates': {'templateid': TEMPALTEID},
                         'description': desc,
-                        'tags': {{'tag': 'Organization ID', 'value': id_org}}
+                        'tags': {'tag': 'Organization ID', 'value': id_org}
                     })
     print(f'запрос был. Результат {zapi}')
 
