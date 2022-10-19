@@ -26,7 +26,7 @@ def zbx_data_sender(json_data):
     packet = [
         ZabbixMetric(DEVEUI, 'testkey', json_data),
     ]
-    sender = ZabbixSender(use_config=True)
+    sender = ZabbixSender(zabbix_server='127.0.0.1')
     # sender = ZabbixSender(zabbix_server='http://mon-iot.ertelecom.ru/zabbix')
     result_send = sender.send(packet)
     print(result_send)
