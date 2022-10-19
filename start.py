@@ -22,12 +22,9 @@ app = Flask(__name__)
 
 
 def zbx_data_sender(json_data):
-    print(json_data)
-    DEVEUI = json_data.get('DevEUI_uplink')['DevEUI']
-    print(DEVEUI)
-    
+    deveui = json_data.get('DevEUI_uplink')['DevEUI']   
     packet = [
-        ZabbixMetric(DEVEUI, 'testkey', json.dumps(json_data)),
+        ZabbixMetric('6c4756c9bd557121', 'testkey', json.dumps(json_data)),
     ]
     sender = ZabbixSender(zabbix_server='10.147.150.108')
     # sender = ZabbixSender(zabbix_server='http://mon-iot.ertelecom.ru/zabbix')
@@ -67,6 +64,7 @@ def login():
     if request.method == 'POST':
         if request.get_json().get('DevEUI_uplink'):
             print(request.get_json())
+            zbx_data_sender(request.get_json())
         return 'OK'
     else:
         # print(TEMP_JSON)
