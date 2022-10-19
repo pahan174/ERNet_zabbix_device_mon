@@ -25,7 +25,7 @@ def zbx_data_sender(json_data):
     print(json_data)
     DEVEUI = json_data.get('DevEUI_uplink')['DevEUI']
     packet = [
-        ZabbixMetric(DEVEUI, 'testkey', json_data),
+        ZabbixMetric(DEVEUI, 'testkey', json.dumps(json_data)),
     ]
     sender = ZabbixSender(zabbix_server='127.0.0.1')
     # sender = ZabbixSender(zabbix_server='http://mon-iot.ertelecom.ru/zabbix')
@@ -68,5 +68,5 @@ def login():
         return 'OK'
     else:
         # print(TEMP_JSON)
-        zbx_data_sender(json.dumps(TEMP_JSON))
+        zbx_data_sender(TEMP_JSON)
         return "Это метод GET"
