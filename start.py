@@ -30,8 +30,9 @@ def zbx_data_sender(json_data):
     result_send = sender.send(packet)
     print(result_send)
     if result_send.failed > 0 and result_send.failed == result_send.total:
+        org_id = json_data.get('DevEUI_uplink')['CustomerID']
         try:
-            api_zabbix_create_host(deveui, '123')
+            api_zabbix_create_host(deveui, org_id)
         except Exception as e:
             print(e)
     #         if 'Host with the same visible name' in e.data:
