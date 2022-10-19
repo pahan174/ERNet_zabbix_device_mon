@@ -4,6 +4,7 @@ from markupsafe import escape
 from flask import request
 from datetime import datetime
 from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixAPI
+import json
 
 # URL_API = 'http://ernet.ertelecom.ru/api/monitoring/gateways'
 # TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5X2lkIjoiMzcwOTE2OWQtMDVjNS00YzBkLWJkOGUtOTNmMjg5MzVkY2I0IiwiYXVkIjoiYXMiLCJpc3MiOiJhcyIsIm5iZiI6MTYyMTMxNDM5OCwic3ViIjoiYXBpX2tleSJ9.utt_7dVw_mvMWI_HwLGwkwPHXNCFh6pAciwGrl64o_M'
@@ -67,5 +68,5 @@ def login():
         return 'OK'
     else:
         # print(TEMP_JSON)
-        zbx_data_sender(TEMP_JSON)
+        zbx_data_sender(json.dumps(TEMP_JSON))
         return "Это метод GET"
