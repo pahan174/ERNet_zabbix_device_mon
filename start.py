@@ -15,7 +15,7 @@ USER_PASS = 'QMD~7H%%'
 GROUPID = '27'
 TEMPALTEID = '11488'
 
-TEMP_JSON = {"DevEUI_uplink":{"Time":"2022-10-19T09:03:45.438+00:00","DevEUI":"6c4756c9bd557121","FPort":"2","FCntUp":"932","ADRbit":"1","MType":"2","payload_hex":"78a30802a035e12a00000000009704a035e12a0000000000970003c879e22a000000000000","mic_hex":"6b741972","Lrcid":"","LrrRSSI":"-116","LrrSNR":"0","SpFact":"12","SubBand":"","DevLrrCnt":"4","Lrrid":"4658425300003e87","LrrLAT":"57.99918","LrrLON":"55.93696","Lrrs":[{"Lrrid":"4658425300003e87","Chain":"0","LrrRSSI":"-116","LrrSNR":"0","LrrESP":"-119.01029995663981"},{"Lrrid":"4658425300003e85","Chain":"0","LrrRSSI":"-115","LrrSNR":"0","LrrESP":"-118.01029995663981"},{"Lrrid":"4658425300003e0d","Chain":"0","LrrRSSI":"-117","LrrSNR":"-10","LrrESP":"-127.41392685158225"},{"Lrrid":"4658425300003e09","Chain":"0","LrrRSSI":"-119","LrrSNR":"-12","LrrESP":"-131.26572375596103"}],"BatteryTime":"2022-10-19T09:03:46.03649Z","BatteryLevel":"96.85","CustomerID":"103","InstantPER":"","MeanPER":"","DevAddr":"697b9100"}}
+TEMP_JSON = {"DevEUI_uplink":{"Time":"2022-10-19T09:03:45.438+00:00","DevEUI":"6c4756c9bd557121","FPort":"2","FCntUp":"933","ADRbit":"1","MType":"2","payload_hex":"78a30802a035e12a00000000009704a035e12a0000000000970003c879e22a000000000000","mic_hex":"6b741972","Lrcid":"","LrrRSSI":"-116","LrrSNR":"0","SpFact":"12","SubBand":"","DevLrrCnt":"4","Lrrid":"4658425300003e87","LrrLAT":"57.99918","LrrLON":"55.93696","Lrrs":[{"Lrrid":"4658425300003e87","Chain":"0","LrrRSSI":"-116","LrrSNR":"0","LrrESP":"-119.01029995663981"},{"Lrrid":"4658425300003e85","Chain":"0","LrrRSSI":"-115","LrrSNR":"0","LrrESP":"-118.01029995663981"},{"Lrrid":"4658425300003e0d","Chain":"0","LrrRSSI":"-117","LrrSNR":"-10","LrrESP":"-127.41392685158225"},{"Lrrid":"4658425300003e09","Chain":"0","LrrRSSI":"-119","LrrSNR":"-12","LrrESP":"-131.26572375596103"}],"BatteryTime":"2022-10-19T09:03:46.03649Z","BatteryLevel":"96.85","CustomerID":"103","InstantPER":"","MeanPER":"","DevAddr":"697b9100"}}
 
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def zbx_data_sender(json_data):
     print(DEVEUI)
     
     packet = [
-        ZabbixMetric('6c4756c9bd557121', 'testkey', json.dumps(json_data)),
+        ZabbixMetric(DEVEUI, 'testkey', json.dumps(json_data)),
     ]
     sender = ZabbixSender(zabbix_server='10.147.150.108')
     # sender = ZabbixSender(zabbix_server='http://mon-iot.ertelecom.ru/zabbix')
