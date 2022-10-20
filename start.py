@@ -99,9 +99,10 @@ def api_zabbix_create_host(deveui, id_org):
                         'tags': {'tag': 'Organization ID', 'value': id_org}
                     })
     print(f'запрос был. Результат {answer["result"]}')
-    hostid = answer["result"].get['hostids']
-    logger.info(f'Создали устройство {deveui} c id {hostid}')
-    print('В лог записал')
+    print(type(answer["result"]))
+    # hostid = answer["result"].get['hostids']
+    # logger.info(f'Создали устройство {deveui} c id {hostid}')
+    # print('В лог записал')
     # if hostid:
         
 
