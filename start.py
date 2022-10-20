@@ -27,7 +27,7 @@ app = Flask(__name__)
 def zbx_data_sender(json_data):
     deveui = json_data.get('DevEUI_uplink')['DevEUI']   
     packet = [
-        ZabbixMetric(deveui, 'testkey', json.dumps(json_data)),
+        ZabbixMetric('e63e51162ae0db20', 'testkey', json.dumps(json_data)),
     ]
     sender = ZabbixSender(zabbix_server='10.147.150.108')
     # sender = ZabbixSender(zabbix_server='http://mon-iot.ertelecom.ru/zabbix')
