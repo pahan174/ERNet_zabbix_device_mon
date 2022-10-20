@@ -25,9 +25,10 @@ app = Flask(__name__)
 
 
 def zbx_data_sender(json_data):
-    deveui = json_data.get('DevEUI_uplink')['DevEUI']   
+    deveui = json_data.get('DevEUI_uplink')['DevEUI']
+    print(deveui)
     packet = [
-        ZabbixMetric('e63e51162ae0db20', 'testkey', json.dumps(json_data)),
+        ZabbixMetric(deveui, 'testkey', json.dumps(json_data)),
     ]
     sender = ZabbixSender(zabbix_server='10.147.150.108')
     # sender = ZabbixSender(zabbix_server='http://mon-iot.ertelecom.ru/zabbix')
@@ -64,7 +65,7 @@ def api_zabbix_create_host(deveui, id_org):
     zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
     now = datetime.now()
     desc = f'Датчик добавлен в Zabbix {now.strftime("%d-%m-%Y %H:%M")} мск.'
-    zapi.do_request('host.create',
+    answer = zapi.do_request('host.create',
                     {
                         'host': deveui,
                         'name': deveui,
@@ -81,7 +82,7 @@ def api_zabbix_create_host(deveui, id_org):
                         'description': desc,
                         'tags': {'tag': 'Organization ID', 'value': id_org}
                     })
-    print(f'запрос был. Результат {zapi}')
+    print(f'запрос был. Результат {answer["result"]}')
 
 
 @app.route("/")
