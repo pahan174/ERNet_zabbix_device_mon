@@ -5,16 +5,20 @@ from flask import request
 from datetime import datetime
 from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixAPI
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # URL_API = 'http://ernet.ertelecom.ru/api/monitoring/gateways'
 # TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5X2lkIjoiMzcwOTE2OWQtMDVjNS00YzBkLWJkOGUtOTNmMjg5MzVkY2I0IiwiYXVkIjoiYXMiLCJpc3MiOiJhcyIsIm5iZiI6MTYyMTMxNDM5OCwic3ViIjoiYXBpX2tleSJ9.utt_7dVw_mvMWI_HwLGwkwPHXNCFh6pAciwGrl64o_M'
-URL_ZABBIX = 'http://10.147.150.108/'
-USER_ZABBIX = 'Admin'
-USER_PASS = '3XAiY2NCDzBNxmt'
-GROUPID = '28'
-TEMPALTEID = '11488'
+URL_ZABBIX = os.getenv("URL_ZABBIX", default='127.0.0.1')
+USER_ZABBIX = os.getenv("USER_ZABBIX", default='Admin')
+USER_PASS = os.getenv("USER_PASS", default='Admin')
+GROUPID = os.getenv("GROUPID", default='1')
+TEMPALTEID = os.getenv("TEMPALTEID", default='1')
 
-TEMP_JSON = {"DevEUI_uplink":{"Time":"2022-10-19T09:03:45.438+00:00","DevEUI":"6c4756c9bd557121","FPort":"2","FCntUp":"933","ADRbit":"1","MType":"2","payload_hex":"78a30802a035e12a00000000009704a035e12a0000000000970003c879e22a000000000000","mic_hex":"6b741972","Lrcid":"","LrrRSSI":"-116","LrrSNR":"0","SpFact":"12","SubBand":"","DevLrrCnt":"4","Lrrid":"4658425300003e87","LrrLAT":"57.99918","LrrLON":"55.93696","Lrrs":[{"Lrrid":"4658425300003e87","Chain":"0","LrrRSSI":"-116","LrrSNR":"0","LrrESP":"-119.01029995663981"},{"Lrrid":"4658425300003e85","Chain":"0","LrrRSSI":"-115","LrrSNR":"0","LrrESP":"-118.01029995663981"},{"Lrrid":"4658425300003e0d","Chain":"0","LrrRSSI":"-117","LrrSNR":"-10","LrrESP":"-127.41392685158225"},{"Lrrid":"4658425300003e09","Chain":"0","LrrRSSI":"-119","LrrSNR":"-12","LrrESP":"-131.26572375596103"}],"BatteryTime":"2022-10-19T09:03:46.03649Z","BatteryLevel":"96.85","CustomerID":"103","InstantPER":"","MeanPER":"","DevAddr":"697b9100"}}
+# TEMP_JSON = {"DevEUI_uplink":{"Time":"2022-10-19T09:03:45.438+00:00","DevEUI":"6c4756c9bd557121","FPort":"2","FCntUp":"933","ADRbit":"1","MType":"2","payload_hex":"78a30802a035e12a00000000009704a035e12a0000000000970003c879e22a000000000000","mic_hex":"6b741972","Lrcid":"","LrrRSSI":"-116","LrrSNR":"0","SpFact":"12","SubBand":"","DevLrrCnt":"4","Lrrid":"4658425300003e87","LrrLAT":"57.99918","LrrLON":"55.93696","Lrrs":[{"Lrrid":"4658425300003e87","Chain":"0","LrrRSSI":"-116","LrrSNR":"0","LrrESP":"-119.01029995663981"},{"Lrrid":"4658425300003e85","Chain":"0","LrrRSSI":"-115","LrrSNR":"0","LrrESP":"-118.01029995663981"},{"Lrrid":"4658425300003e0d","Chain":"0","LrrRSSI":"-117","LrrSNR":"-10","LrrESP":"-127.41392685158225"},{"Lrrid":"4658425300003e09","Chain":"0","LrrRSSI":"-119","LrrSNR":"-12","LrrESP":"-131.26572375596103"}],"BatteryTime":"2022-10-19T09:03:46.03649Z","BatteryLevel":"96.85","CustomerID":"103","InstantPER":"","MeanPER":"","DevAddr":"697b9100"}}
 
 
 app = Flask(__name__)
