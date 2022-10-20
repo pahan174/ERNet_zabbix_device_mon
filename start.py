@@ -33,6 +33,8 @@ formatter = logging.Formatter(
 )
 handler.setFormatter(formatter)
 
+logger.info(f'Скрипт запустился')
+
 # TEMP_JSON = {"DevEUI_uplink":{"Time":"2022-10-19T09:03:45.438+00:00","DevEUI":"6c4756c9bd557121","FPort":"2","FCntUp":"933","ADRbit":"1","MType":"2","payload_hex":"78a30802a035e12a00000000009704a035e12a0000000000970003c879e22a000000000000","mic_hex":"6b741972","Lrcid":"","LrrRSSI":"-116","LrrSNR":"0","SpFact":"12","SubBand":"","DevLrrCnt":"4","Lrrid":"4658425300003e87","LrrLAT":"57.99918","LrrLON":"55.93696","Lrrs":[{"Lrrid":"4658425300003e87","Chain":"0","LrrRSSI":"-116","LrrSNR":"0","LrrESP":"-119.01029995663981"},{"Lrrid":"4658425300003e85","Chain":"0","LrrRSSI":"-115","LrrSNR":"0","LrrESP":"-118.01029995663981"},{"Lrrid":"4658425300003e0d","Chain":"0","LrrRSSI":"-117","LrrSNR":"-10","LrrESP":"-127.41392685158225"},{"Lrrid":"4658425300003e09","Chain":"0","LrrRSSI":"-119","LrrSNR":"-12","LrrESP":"-131.26572375596103"}],"BatteryTime":"2022-10-19T09:03:46.03649Z","BatteryLevel":"96.85","CustomerID":"103","InstantPER":"","MeanPER":"","DevAddr":"697b9100"}}
 
 
@@ -53,8 +55,7 @@ def zbx_data_sender(json_data):
         try:
             api_zabbix_create_host(deveui, org_id)
         except Exception as e:
-            logger.error(f'Не удалось создать устройство в Zabbix'
-                         f'{e.data}')
+            logger.error(f'Не удалось создать устройство в Zabbix. Ошибка {e}')
 
     #         if 'Host with the same visible name' in e.data:
     #             #print(f'У БС {json_data["name"]} сменился ID. Новый ID {json_data["id"][-8:]}')  
@@ -100,12 +101,10 @@ def api_zabbix_create_host(deveui, id_org):
                     })
     print(f'запрос был. Результат {answer["result"]}')
     hostid = answer["result"].get("hostids")
-    print(hostid)
     if hostid:
-        print('ДА')
         logger.info(f'Создали устройство {deveui} c id {hostid}')
-    print('Нет')
-    # 
+    else:
+        logger.error(f'Устройство не создалось. Ошибка {answer["result"]}')
         
 
 
