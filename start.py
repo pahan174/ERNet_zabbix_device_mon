@@ -100,9 +100,10 @@ def api_zabbix_create_host(deveui, id_org):
                     })
     print(f'запрос был. Результат {answer["result"]}')
     hostid = answer["result"].get['hostids']
-    if hostid:
-        logger.info(f'Создали устройство {deveui} c id {hostid}')
-        print('В лог записал')
+    logger.info(f'Создали устройство {deveui} c id {hostid}')
+    print('В лог записал')
+    # if hostid:
+        
 
 
 @app.route("/")
