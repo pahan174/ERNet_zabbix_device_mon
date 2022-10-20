@@ -53,13 +53,17 @@ def zbx_data_sender(json_data):
     #         f = open('/usr/share/zabbix/Sender_LOG_' + datetime.now().strftime("%d-%m-%Y") + '.log', 'a', encoding='utf-8')
     #         f.write(f'{datetime.now().strftime("%d-%m-%Y")}; {datetime.now().strftime("%H:%M")} ; {json_data["id"][-8:]} ; {json_data["name"]} ; На сервер добавлена новая БС\n')
     #         f.close()
+        else:
+            result_send = sender.send(packet)
+            print(result_send)
+
 
 
 def api_zabbix_create_host(deveui, id_org):
     global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
     zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
     now = datetime.now()
-    desc = f'Датчик добавлен в Zabbix {now.strftime("%d-%m-%Y %H:%M")}'
+    desc = f'Датчик добавлен в Zabbix {now.strftime("%d-%m-%Y %H:%M")} мск.'
     zapi.do_request('host.create',
                     {
                         'host': deveui,
