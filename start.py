@@ -70,7 +70,7 @@ def zbx_data_sender(json_data):
     #         f = open('/usr/share/zabbix/Sender_LOG_' + datetime.now().strftime("%d-%m-%Y") + '.log', 'a', encoding='utf-8')
     #         f.write(f'{datetime.now().strftime("%d-%m-%Y")}; {datetime.now().strftime("%H:%M")} ; {json_data["id"][-8:]} ; {json_data["name"]} ; На сервер добавлена новая БС\n')
     #         f.close()
-        else:
+        # else:
             # result_send = sender.send(packet)
             # logger.info(f'Создали устройство')
 
