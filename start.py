@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import logging
 from logging.handlers import RotatingFileHandler
 import sys
+from pyzabbix.api import ZabbixAPIException
 
 load_dotenv()
 
@@ -34,10 +35,10 @@ handler.setFormatter(formatter)
 
 logger.info('Скрипт запустился')
     # global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
-zapi = ZabbixAPI(url=URL_ZABBIX, user='123', password=USER_PASS)
 try:
+    zapi = ZabbixAPI(url=URL_ZABBIX, user='123', password=USER_PASS)
     answ = zapi.api_version()
-except Exception as e:
+except ZabbixAPIException as e:
     logger.critical(f'Нет связи с сервером Zabbix {e}')
     sys.exit()
 else:
