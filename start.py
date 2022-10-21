@@ -34,9 +34,8 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 
 logger.info('Скрипт запустился')
-    # global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
 try:
-    zapi = ZabbixAPI(url=URL_ZABBIX, user='123', password=USER_PASS)
+    zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
     answ = zapi.api_version()
 except ZabbixAPIException as e:
     logger.critical(f'Нет связи с сервером Zabbix {e}')
@@ -106,4 +105,22 @@ def login():
             zbx_data_sender(request.get_json(), zapi)
         return 'OK'
     else:
+        # answer = zapi.do_request('host.create',
+        #             {
+        #             'host': deveui,
+        #             'name': deveui,
+        #             'interfaces': {
+        #                     'type': '1',
+        #                     'main': '1',
+        #                     'useip': '1',
+        #                     'ip': '127.0.0.1',
+        #                     'dns': '',
+        #                     'port': '10050'
+        #                 },
+        #             'groups': {'groupid': GROUPID},
+        #             'templates': {'templateid': TEMPALTEID},
+        #             'description': desc,
+        #             'tags': {'tag': 'Organization ID', 'value': id_org}
+        #         })
+        print('Проверка')
         return "Это метод GET"
