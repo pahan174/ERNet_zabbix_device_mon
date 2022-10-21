@@ -33,7 +33,7 @@ handler.setFormatter(formatter)
 
 logger.info('Скрипт запустился')
     # global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
-zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
+zapi = ZabbixAPI(url=URL_ZABBIX, user='123', password=USER_PASS)
 answ = zapi.api_version()
 print("Connected to Zabbix API Version %s" % zapi.api_version())
 
