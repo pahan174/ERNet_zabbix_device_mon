@@ -34,7 +34,7 @@ handler.setFormatter(formatter)
 
 logger.info('Скрипт запустился')
     # global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
-zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
+zapi = ZabbixAPI(url=URL_ZABBIX, user='123', password=USER_PASS)
 try:
     answ = zapi.api_version()
 except Exception as e:
@@ -46,7 +46,7 @@ else:
 app = Flask(__name__)
 
 
-def zbx_data_sender(json_data):
+def zbx_data_sender(json_data, zapi):
     deveui = json_data.get('DevEUI_uplink')['DevEUI']
     packet = [
         ZabbixMetric(deveui, 'testkey', json.dumps(json_data)),
@@ -56,7 +56,7 @@ def zbx_data_sender(json_data):
     if result_send.failed > 0 and result_send.failed == result_send.total:
         org_id = json_data.get('DevEUI_uplink')['CustomerID']
         try:
-            api_zabbix_create_host(deveui, org_id)
+            api_zabbix_create_host(zapi, deveui, org_id)
         except Exception as e:
             logger.error(f'Не удалось создать устройство в Zabbix. Ошибка {e}')
 
@@ -102,7 +102,7 @@ def api_zabbix_create_host(zapi, deveui, id_org):
 def login():
     if request.method == 'POST':
         if request.get_json().get('DevEUI_uplink'):
-            zbx_data_sender(request.get_json())
+            zbx_data_sender(request.get_json(), zapi)
         return 'OK'
     else:
         return "Это метод GET"
