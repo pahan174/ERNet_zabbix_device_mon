@@ -32,6 +32,11 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 
 logger.info('Скрипт запустился')
+    # global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
+zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
+answ = zapi.api_version()
+print("Connected to Zabbix API Version %s" % zapi.api_version())
+
 
 app = Flask(__name__)
 
@@ -51,9 +56,7 @@ def zbx_data_sender(json_data):
             logger.error(f'Не удалось создать устройство в Zabbix. Ошибка {e}')
 
 
-def api_zabbix_create_host(deveui, id_org):
-    global URL_ZABBIX, USER_ZABBIX, USER_PASS, GROUPID, TEMPALTEID
-    zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
+def api_zabbix_create_host(zapi, deveui, id_org):
     now = datetime.now()
     desc = f'Датчик добавлен в Zabbix {now.strftime("%d-%m-%Y %H:%M")} мск.'
     answer = zapi.do_request('host.create',
@@ -80,14 +83,14 @@ def api_zabbix_create_host(deveui, id_org):
         logger.error(f'Устройство не создалось. Ошибка: {answer["result"]}')
 
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+# @app.route("/")
+# def hello_world():
+#     return "<p>Hello, World!</p>"
 
 
-@app.route("/<name>")
-def hello(name):
-    return f"Hello, {escape(name)}!"
+# @app.route("/<name>")
+# def hello(name):
+#     return f"Hello, {escape(name)}!"
 
 
 @app.route('/method', methods=['GET', 'POST'])
