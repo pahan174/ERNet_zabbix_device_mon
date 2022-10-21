@@ -11,9 +11,13 @@ import logging
 from logging.handlers import RotatingFileHandler
 import sys
 from pyzabbix.api import ZabbixAPIException
+import requests
 
 load_dotenv()
 
+
+URL_API = os.getenv('URL_API')
+TOKEN = os.getenv('TOKEN')
 URL_ZABBIX = os.getenv("URL_ZABBIX", default='127.0.0.1')
 USER_ZABBIX = os.getenv("USER_ZABBIX", default='Admin')
 USER_PASS = os.getenv("USER_PASS", default='Admin')
@@ -42,6 +46,16 @@ except ZabbixAPIException as e:
     sys.exit()
 else:
     logger.info("Установлена связь с Zabbix API Version %s" % zapi.api_version())
+
+try:
+    response = requests.get(URL_API + 'internal/info', headers={
+        'Accept': 'application/json',
+        'Grpc-Metadata-Authorization': TOKEN}
+        )
+except Exception as e:
+    logger.critical(f'Нет связи с сервером ERNet. Ошибка {e}')
+else:
+    logger.info(f'Установлена связь с ERNet API Version {response}')
 
 app = Flask(__name__)
 
@@ -87,6 +101,8 @@ def api_zabbix_create_host(zapi, deveui, id_org):
     else:
         logger.error(f'Устройство не создалось. Ошибка: {answer["result"]}')
 
+# def get_prof_id()
+
 
 # @app.route("/")
 # def hello_world():
@@ -105,22 +121,4 @@ def login():
             zbx_data_sender(request.get_json(), zapi)
         return 'OK'
     else:
-        # answer = zapi.do_request('host.create',
-        #             {
-        #             'host': deveui,
-        #             'name': deveui,
-        #             'interfaces': {
-        #                     'type': '1',
-        #                     'main': '1',
-        #                     'useip': '1',
-        #                     'ip': '127.0.0.1',
-        #                     'dns': '',
-        #                     'port': '10050'
-        #                 },
-        #             'groups': {'groupid': GROUPID},
-        #             'templates': {'templateid': TEMPALTEID},
-        #             'description': desc,
-        #             'tags': {'tag': 'Organization ID', 'value': id_org}
-        #         })
-        print('Проверка')
         return "Это метод GET"
