@@ -1,6 +1,5 @@
 
 from flask import Flask
-from markupsafe import escape
 from flask import request
 from datetime import datetime
 from pyzabbix import ZabbixMetric, ZabbixSender, ZabbixAPI
@@ -55,7 +54,7 @@ try:
 except Exception as e:
     logger.critical(f'Нет связи с сервером ERNet. Ошибка {e}')
 else:
-    logger.info(f'Установлена связь с ERNet API Version {response}')
+    logger.info(f'Установлена связь с ERNet API. {response}')
 
 app = Flask(__name__)
 
@@ -100,18 +99,6 @@ def api_zabbix_create_host(zapi, deveui, id_org):
         logger.info(f'Создали устройство {deveui} c id {hostid}')
     else:
         logger.error(f'Устройство не создалось. Ошибка: {answer["result"]}')
-
-# def get_prof_id()
-
-
-# @app.route("/")
-# def hello_world():
-#     return "<p>Hello, World!</p>"
-
-
-# @app.route("/<name>")
-# def hello(name):
-#     return f"Hello, {escape(name)}!"
 
 
 @app.route('/method', methods=['GET', 'POST'])
