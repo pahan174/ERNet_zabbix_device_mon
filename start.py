@@ -11,6 +11,7 @@ from logging.handlers import RotatingFileHandler
 import sys
 from pyzabbix.api import ZabbixAPIException
 import requests
+from typing import Union
 
 load_dotenv()
 
@@ -44,7 +45,8 @@ except ZabbixAPIException as e:
     logger.critical(f'Нет связи с сервером Zabbix {e}')
     sys.exit()
 else:
-    logger.info("Установлена связь с Zabbix API Version %s" % zapi.api_version())
+    logger.info("Установлена связь с Zabbix"
+                "API Version %s" % zapi.api_version())
 
 try:
     response = requests.get(URL_API + 'internal/info', headers={
@@ -57,6 +59,30 @@ else:
     logger.info(f'Установлена связь с ERNet API. {response}')
 
 app = Flask(__name__)
+
+
+def get_profile_id_from_ernet(deveui: str) -> Union[str, bool]:
+    FULL_URL = URL_API + 'devices/' + deveui
+    response = requests.get(FULL_URL, headers={
+        'Accept': 'application/json',
+        'Grpc-Metadata-Authorization': TOKEN}
+        )
+    answ: dict = response.json()['device']
+    if answ.get('deviceProfileID'):
+        return answ.get('deviceProfileID')
+    return False
+
+
+def get_template_zabbix_id_from_tags_template_profile(prof_id: str) -> str:
+    FULL_URL = URL_API + 'device-profiles/' + prof_id
+    response = requests.get(FULL_URL, headers={
+        'Accept': 'application/json',
+        'Grpc-Metadata-Authorization': TOKEN}
+        )
+    answ: dict = response.json()['deviceProfile']
+    if answ.get('tags').get('id_zabbix_template'):
+        return answ.get('tags').get('id_zabbix_template')
+    return TEMPALTEID
 
 
 def zbx_data_sender(json_data, zapi):
@@ -77,23 +103,29 @@ def zbx_data_sender(json_data, zapi):
 def api_zabbix_create_host(zapi, deveui, id_org):
     now = datetime.now()
     desc = f'Датчик добавлен в Zabbix {now.strftime("%d-%m-%Y %H:%M")} мск.'
+    prof_id = get_profile_id_from_ernet(deveui)
+    if prof_id is False:
+        templ_id = TEMPALTEID
+    else:
+        templ_id = get_template_zabbix_id_from_tags_template_profile(prof_id)
     answer = zapi.do_request('host.create',
-                        {
-                        'host': deveui,
-                        'name': deveui,
-                        'interfaces': {
+                             {
+                              'host': deveui,
+                              'name': deveui,
+                              'interfaces': {
                                 'type': '1',
                                 'main': '1',
                                 'useip': '1',
                                 'ip': '127.0.0.1',
                                 'dns': '',
                                 'port': '10050'
-                            },
-                        'groups': {'groupid': GROUPID},
-                        'templates': {'templateid': TEMPALTEID},
-                        'description': desc,
-                        'tags': {'tag': 'Organization ID', 'value': id_org}
-                    })
+                              },
+                              'groups': {'groupid': GROUPID},
+                              'templates': {'templateid': templ_id},
+                              'description': desc,
+                              'tags': {'tag': 'Organization ID',
+                                       'value': id_org}
+                             })
     hostid = answer["result"].get("hostids")
     if hostid:
         logger.info(f'Создали устройство {deveui} c id {hostid}')
