@@ -18,11 +18,12 @@ load_dotenv()
 
 URL_API = os.getenv('URL_API')
 TOKEN = os.getenv('TOKEN')
-URL_ZABBIX = os.getenv("URL_ZABBIX", default='127.0.0.1')
+IP_ZABBIX = os.getenv("IP_ZABBIX", default='127.0.0.1')
 USER_ZABBIX = os.getenv("USER_ZABBIX", default='Admin')
 USER_PASS = os.getenv("USER_PASS", default='Admin')
 GROUPID = os.getenv("GROUPID", default='1')
 TEMPALTEID = os.getenv("TEMPALTEID", default='1')
+URL_ZABBIX = 'http://' + IP_ZABBIX + '/'
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -40,7 +41,6 @@ handler.setFormatter(formatter)
 logger.info('Скрипт запустился')
 try:
     zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
-    answ = zapi.api_version()
 except ZabbixAPIException as e:
     logger.critical(f'Нет связи с сервером Zabbix {e}')
     sys.exit()
@@ -49,14 +49,16 @@ else:
                 "API Version %s" % zapi.api_version())
 
 try:
-    response = requests.get(URL_API + 'internal/info', headers={
+    response = requests.get(URL_API + 'users', headers={
         'Accept': 'application/json',
         'Grpc-Metadata-Authorization': TOKEN}
         )
 except Exception as e:
     logger.critical(f'Нет связи с сервером ERNet. Ошибка {e}')
+if response.status_code == 200:
+    logger.info(f'Установлена связь с ERNet API. {response.status_code}')
 else:
-    logger.info(f'Установлена связь с ERNet API. {response}')
+    logger.critical(f'Нет связи с сервером ERNet. Ошибка - {response.text}')
 
 app = Flask(__name__)
 
@@ -90,7 +92,7 @@ def zbx_data_sender(json_data, zapi):
     packet = [
         ZabbixMetric(deveui, 'testkey', json.dumps(json_data)),
     ]
-    sender = ZabbixSender(zabbix_server='10.147.150.108')
+    sender = ZabbixSender(zabbix_server=IP_ZABBIX)
     result_send = sender.send(packet)
     if result_send.failed > 0 and result_send.failed == result_send.total:
         org_id = json_data.get('DevEUI_uplink')['CustomerID']
@@ -141,3 +143,12 @@ def login():
         return 'OK'
     else:
         return "Это метод GET"
+
+
+@app.route("/")
+def hello():
+    return "<h1 style='color:blue'>Hello There!</h1>"
+
+
+if __name__=="__main__":
+    app.run(host='0.0.0.0')

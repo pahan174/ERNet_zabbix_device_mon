@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Some files
+create_iot_device.log.bak
+ernetmon.ini
+start.py.bak
+test.py
+wsgi.py
+
