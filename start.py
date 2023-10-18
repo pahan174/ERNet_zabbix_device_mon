@@ -27,7 +27,7 @@ URL_ZABBIX = 'http://' + IP_ZABBIX + '/'
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-handler = RotatingFileHandler('create_iot_device.log',
+handler = RotatingFileHandler('logs/create_iot_device.log',
                               maxBytes=50000000,
                               backupCount=5, encoding='utf-8'
                               )
@@ -41,7 +41,7 @@ handler.setFormatter(formatter)
 logger.info('Скрипт запустился')
 try:
     zapi = ZabbixAPI(url=URL_ZABBIX, user=USER_ZABBIX, password=USER_PASS)
-except ZabbixAPIException as e:
+except Exception as e:
     logger.critical(f'Нет связи с сервером Zabbix {e}')
     sys.exit()
 else:
@@ -150,5 +150,5 @@ def hello():
     return "<h1 style='color:blue'>Hello There!</h1>"
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     app.run(host='0.0.0.0')
